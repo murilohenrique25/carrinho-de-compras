@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Clientes</title>
+</h:head>
+<h:body>
+<div class="card">
+    <h:form>
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:menuButton value="Opções">
+            <p:menuitem value="Clientes" action="cliente?faces-redirect=true" icon="pi pi-user"/>
+            <p:menuitem value="Produtos" action="produto?faces-redirect=true" icon="pi pi-list"/>
+            <p:menuitem value="Vendas" action="venda?faces-redirect=true" icon="pi pi-shopping-cart"/>
+            <p:menuitem value="Relatórios" action="relatorio?faces-redirect=true" icon="pi pi-chart-bar"/>
+        </p:menuButton>
+    </h:form>
+</div>
+
+	<br/>
+	<br/>
+<h:form>
+    <p:panel header="Clientes" style="width: 50%">
+        <h:panelGrid columns="1" id="clienteNE" style="width: 100%; text-align: left;">
+        <p:inputText id="id" readonly="true" value="#{clienteController.cliente.id}"  style="width: 90%; height: 30px;" />
+            <p:inputText id="nome" value="#{clienteController.cliente.nome}" placeholder="Nome Cliente" required="true" requiredMessage="Campo Obrigatório" style="width: 90%; height: 30px;" />
+            <p:inputText id="sobrenome" value="#{clienteController.cliente.sobrenome}" placeholder="Sobrenome Cliente" required="true" requiredMessage="Campo Obrigatório" style="width: 90%; height: 30px;" />
+          
+            <h:panelGroup>
+            	<p:commandButton value="Salvar" ajax="false" action="#{clienteController.salvar}"/>
+            <p:commandButton value="Novo" ajax="false" action="#{clienteController.novo}"/>
+            </h:panelGroup>
+        </h:panelGrid>
+		
+       
+
+    </p:panel>
+</h:form>
+ <p:separator/>
+<h:form>
+		<p:dataTable id="clientes" var="cli"
+			value="#{clienteController.listarTodos()}">
+			<f:facet name="header">
+              Clientes Cadastrados
+            </f:facet>
+
+			<p:column headerText="Nome">
+				<h:outputText value="#{cli.nome}" />
+			</p:column>
+			<p:column headerText="Sobrenome">
+				<h:outputText value="#{cli.sobrenome}" />
+			</p:column>
+
+		 	<p:column headerText="">
+				<p:commandButton 
+					value="Editar">
+						<f:ajax listener="#{clienteController.editar(cli)}" execute="@all" render="@all" event="click"/>
+					</p:commandButton>
+			</p:column>
+			<p:column headerText="">
+				<p:commandButton
+					value="Excluir" onclick="return window.confirm('Certeza?')">
+					<f:ajax listener="#{clienteController.excluir(cli)}" execute="@all" render="@all" event="click"/>
+					</p:commandButton>
+			</p:column>
+			
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>

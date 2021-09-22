@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Produtos</title>
+</h:head>
+<h:body>
+<div class="card">
+    <h:form>
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:menuButton value="Opções">
+            <p:menuitem value="Clientes" action="cliente?faces-redirect=true" icon="pi pi-user"/>
+            <p:menuitem value="Produtos" action="produto?faces-redirect=true" icon="pi pi-list"/>
+            <p:menuitem value="Vendas" action="venda?faces-redirect=true" icon="pi pi-shopping-cart"/>
+            <p:menuitem value="Relatórios" action="relatorio?faces-redirect=true" icon="pi pi-chart-bar"/>
+        </p:menuButton>
+    </h:form>
+</div>
+	<br/>
+	<br/>
+<h:form>
+    <p:panel id="cadProd" header="Produtos" style="width: 50%">
+        <h:panelGrid id="cadastrarProduto" columns="1" style="width: 100%; text-align: left;">
+        <p:inputText id="id" readonly="true" value="#{produtoController.produto.id}"  style="width: 90%; height: 30px;" />
+            <p:inputText id="produto" value="#{produtoController.produto.nome}" placeholder="Nome Produto" required="true" requiredMessage="Campo Obrigatório" style="width: 90%; height: 30px;" />
+            <p:inputText id="valor" value="#{produtoController.produto.valor}" placeholder="Valor" required="true" requiredMessage="Campo Obrigatório" style="width: 90%; height: 30px;" />
+            <p:inputText id="quantidade" value="#{produtoController.produto.quantidade}" placeholder="Quantidade" required="true" requiredMessage="Campo Obrigatório" style="width: 90%; height: 30px;">
+            	 <f:convertNumber integerOnly="true"/>
+            </p:inputText>
+            <h:panelGroup>
+            	<p:commandButton value="Salvar" ajax="false" action="#{produtoController.salvar}" update=":produtos">
+            		
+            	</p:commandButton>
+            <p:commandButton value="Novo" ajax="false" action="#{produtoController.novo}"/>
+            </h:panelGroup>
+        </h:panelGrid>
+		
+       
+
+    </p:panel>
+</h:form>
+ <p:separator/>
+<h:form>
+		<p:dataTable id="produtos" var="prod"
+			value="#{produtoController.listarTodos()}">
+			<f:facet name="header">
+              Produtos Cadastrados
+            </f:facet>
+
+			<p:column headerText="Nome">
+				<h:outputText value="#{prod.nome}" />
+			</p:column>
+			<p:column headerText="Preço Unitário">
+				<h:outputText value="#{prod.valor}" />
+			</p:column>
+			<p:column headerText="Quantidade">
+				<h:outputText value="#{prod.quantidade}" />
+			</p:column>
+		 	<p:column headerText="">
+				<p:commandButton 
+					value="Editar">
+						<f:ajax listener="#{produtoController.editar(prod)}" execute="@all" render="@all" event="click"/>
+					</p:commandButton>
+			</p:column>
+			<p:column headerText="">
+				<p:commandButton
+					value="Excluir" onclick="return window.confirm('Certeza?')">
+					<f:ajax listener="#{produtoController.excluir(prod)}" execute="@all" render="@all" event="click"/>
+					</p:commandButton>
+			</p:column>
+			
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>

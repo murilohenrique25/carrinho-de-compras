@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Venda</title>
+</h:head>
+<h:body>
+	<div class="card">
+    <h:form>
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:menuButton value="Opções">
+            <p:menuitem value="Clientes" action="cliente?faces-redirect=true" icon="pi pi-user"/>
+            <p:menuitem value="Produtos" action="produto?faces-redirect=true" icon="pi pi-list"/>
+            <p:menuitem value="Vendas" action="venda?faces-redirect=true" icon="pi pi-shopping-cart"/>
+            <p:menuitem value="Relatórios" action="relatorio?faces-redirect=true" icon="pi pi-chart-bar"/>
+        </p:menuButton>
+    </h:form>
+</div>
+	<br/>
+	<br/>
+
+	<p:growl id="mensagem" showDetail="true"/>
+
+	<h:form id="formulario">
+		<p:panel header="Produtos">
+			<p:dataTable id="tabelaProduto"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{pedidoController.produtos}" var="pro" rows="5"
+				paginatorPosition="bottom">
+
+				<p:column headerText="Descrição" filterBy="#{pro.nome}"
+					sortBy="#{pro.nome}">
+					<h:outputText value="#{pro.nome}" />
+				</p:column>
+
+				<p:column headerText="Quantidade" sortBy="#{pro.quantidade}">
+					<h:outputText value="#{pro.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Preço" sortBy="#{pro.valor}">
+					<h:outputText value="#{pro.valor}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-plus"
+						actionListener="#{pedidoController.adicionar(pro)}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+						
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<p:panel header="Cesta de Compras">
+			<p:dataTable id="tabelaCesta"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{pedidoController.itensPedidos}" var="item" rows="5"
+				paginatorPosition="bottom">
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.produto.nome}" />
+				</p:column>
+
+				<p:column headerText="Preço Un.">
+					<h:outputText value="#{item.produto.valor}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Qtde.">
+					<h:outputText value="#{item.quantidade}" />
+				</p:column>
+
+				<p:column headerText="Preço Parcial">
+					<h:outputText value="#{item.precoParcial}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-minus"
+						actionListener="#{pedidoController.deletar(item)}"
+						update=":formulario:tabelaCesta :formulario:painelFinalizacao">
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<p:panel header="Finalização">
+			<h:panelGrid id="painelFinalizacao" columns="3">
+				<p:outputLabel value="Total: R$" />
+				<h:outputText value="#{pedidoController.pedido.precoTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+				<p:commandButton value="Finalizar"
+					actionListener="#{pedidoController.finalizar}"
+					update=":mensagem :formularioFinalizar:painelFinalizar"
+					oncomplete="PF('dialogo').show();">
+				</p:commandButton>
+
+			</h:panelGrid>
+		</p:panel>
+	</h:form>
+
+	<p:dialog header="Finalizar Venda" widgetVar="dialogo"
+		draggable="false" resizable="false" modal="true" closable="false">
+		<h:form id="formularioFinalizar">
+			<h:panelGrid id="painelFinalizar" columns="2">
+				<p:outputLabel value="Horário: " />
+				<h:outputText value="#{pedidoController.pedido.dataVenda}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm" locale="pt_BR"
+						timeZone="America/Sao_Paulo" />
+				</h:outputText>
+
+				<p:outputLabel value="Total: R$" />
+				<h:outputText value="#{pedidoController.pedido.precoTotal}">
+					<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+				</h:outputText>
+
+				<p:outputLabel value="Cliente:" />
+				<p:selectOneMenu value="#{pedidoController.pedido.cliente}" converter="clienteConverter"
+					 filter="true"
+					filterMatchMode="contains">
+					<f:selectItem noSelectionOption="true"
+						itemLabel="Selecione um cliente" />
+					<f:selectItems value="#{pedidoController.clientes}" var="clie"
+						itemValue="#{clie}"
+						itemLabel="#{clie.nome}" />
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2">
+				<p:commandButton value="Salvar" actionListener="#{pedidoController.salvar}"
+					update=":mensagem :formulario:tabelaProduto :formulario:tabelaCesta :formulario:painelFinalizacao" oncomplete="PF('dialogo').hide();" />
+				<p:commandButton value="Fechar" oncomplete="PF('dialogo').hide();" />
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</h:body>
+</html>

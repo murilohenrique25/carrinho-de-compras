@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Relatórios</title>
+</h:head>
+<h:body>
+	<div class="card">
+    <h:form>
+        <p:growl id="messages" showDetail="true"/>
+
+        <p:menuButton value="Opções">
+            <p:menuitem value="Clientes" action="cliente?faces-redirect=true" icon="pi pi-user"/>
+            <p:menuitem value="Produtos" action="produto?faces-redirect=true" icon="pi pi-list"/>
+            <p:menuitem value="Vendas" action="venda?faces-redirect=true" icon="pi pi-shopping-cart"/>
+            <p:menuitem value="Relatórios" action="relatorio?faces-redirect=true" icon="pi pi-chart-bar"/>
+        </p:menuButton>
+    </h:form>
+</div>
+	<br/>
+	<br/>
+	
+	<p:separator />
+		<br/>
+	<h:form>
+	<h5>Vendas realizadas por Mês:</h5>
+		<p:dataTable style="width: 50%">
+			<p:column headerText="Mês de Refêrencia">
+				<h:outputText  />
+			</p:column>
+			<p:column headerText="Valor total dos pedidos realizados no mês">
+				<h:outputText />
+			</p:column>
+
+		</p:dataTable>
+	</h:form>
+	<br/>
+	<p:separator />
+		<br/>
+		<br/>
+	<h:form id="formulario">
+	
+		<p:panel header="Vendas realizadas por Cliente:">
+			<p:dataTable id="tabelaPedidosClientes"
+				emptyMessage="Nenhum registro encontrado." paginator="true"
+				value="#{pedidoController.vendasTotais}" var="item" rows="5"
+				paginatorPosition="bottom">
+
+				<p:column headerText="Descrição">
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+
+				<p:column headerText="Total ">
+					<h:outputText value="#{item.precoTotal}">
+						<f:convertNumber locale="pt_BR" minFractionDigits="2" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+	</h:form>
+	<br/>
+</h:body>
+</html>
