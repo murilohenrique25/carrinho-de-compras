@@ -1,4 +1,4 @@
-# carrinho-de-compras
+# Carrinho de Compras :memo: :convenience_store:
 Criação de um carrinho de compras(CRUD - Pessoas - Produtos) :ballot_box_with_check:
 
 
